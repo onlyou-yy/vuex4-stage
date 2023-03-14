@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import { createStore } from '../vuex'
 
 export default createStore({
   state: {
@@ -24,4 +24,18 @@ export default createStore({
       },1000)
     }
   },
+  modules:{
+    moduleA:{
+      state:{name:"a"}
+    },
+    moduleB:{
+      state:{name:"b"},
+      modules:{
+        moduleD:{name:"d"}
+      }
+    },
+    moduleC:{
+      state:{name:"c"}
+    },
+  }
 })
