@@ -33,4 +33,13 @@ export default class ModuleCollection{
       })
     }
   }
+
+  //获取命名空间字符串
+  getNamespaced(path){
+    let module = this.root;
+    return path.reduce((namespacedStr,key)=>{
+      module = module.getChild(key);
+      return namespacedStr + (module.namespaced ? key + '/' : '')
+    },'')
+  }
 }

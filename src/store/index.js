@@ -26,15 +26,21 @@ export default createStore({
   },
   modules:{
     moduleA:{
+      namespaced:true,
       state:{name:"a"}
     },
     moduleB:{
+      namespaced:true,
       state:{name:"b"},
       modules:{
-        moduleD:{name:"d"}
+        moduleD:{
+          namespaced:true,
+          state:{name:"b"},
+        }
       }
     },
     moduleC:{
+      namespaced:true,
       state:{name:"c"}
     },
   }
