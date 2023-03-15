@@ -1,6 +1,25 @@
+// import { createStore } from 'vuex'
 import { createStore } from '../vuex'
 
+function customPlugin(store){
+  //在初始化的时候会执行一次
+  let local = localStorage.getItem("VUEX:STATE")
+  if(local){
+    store.replaceState(JSON.parse(local));
+  }
+
+  store.commit("add",4)
+
+  //顶叶事件，在每次状态变更的时候也会执行
+  store.subscribe((mutation,state)=>{
+    localStorage.setItem("VUEX:STATE",JSON.stringify(state))
+  })
+}
+
 export default createStore({
+  plugins:[
+    customPlugin,
+  ],
   strict:true,
   state: {
     count:0

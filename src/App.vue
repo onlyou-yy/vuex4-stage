@@ -28,6 +28,7 @@
 
 <script>
 import { computed } from 'vue';
+// import { useStore } from 'vuex'
 import { useStore } from './vuex'
 import PageA from './views/PageA.vue'
 import PageB from './views/PageB.vue'

@@ -101,6 +101,10 @@ export default class Store{
     const state = store._modules.root.state;
     installModule(store,state,[],store._modules.root);
     resetStoreState(store,state);
+
+    const plugins = options.plugins || []
+    store._subscribes = [];
+    plugins.forEach(plugin => plugin(store));
   }
   _withCommit(fn){
     const commiting = this._commiting;
@@ -108,12 +112,23 @@ export default class Store{
     fn();
     this._commiting = commiting;
   }
+  subscribe(fn){
+    this._subscribes.push(fn)
+  }
+  replaceState(newState){
+    //严格模式下状态不允许直接修改
+    //需要将 _commiting 修改成 true 之后避免触发 assert 断言提示
+    this._withCommit(()=>{
+      this._state.data = newState;
+    })
+  }
   //写成箭头函数，防止结构出来之后 this指向不正确
   commit = (type,payload) => {
     let entry = this._mutations[type] || []
     this._withCommit(()=>{
       entry.forEach(mutation=>mutation(payload))
     })
+    this._subscribes.forEach(fn=>fn({type,payload},this.state))
   }
   dispatch = (type,payload) => {
     let entry = this._actions[type] || []
