@@ -1,4 +1,4 @@
-import {reactive} from "vue"
+import {reactive,watch} from "vue"
 import { storeKey } from "./injectKey";
 import ModuleCollection from "./module/module-collection";
 import { forEachValue, isPromise } from "./utils";
@@ -68,9 +68,15 @@ function resetStoreState(store,state){
     })
   })
 
-
+  if(store.strict){
+    enableStrictMode(store);
+  }
 }
-
+function enableStrictMode(store){
+  watch(()=>store._state.data,()=>{// 监控到数据变化后执行回调
+    console.assert(store._commiting,'不要在mutation中用异步代码修改状态')
+  },{deep:true,flush:'sync'});//watch 默认是异步执行的，我们需要改成同步的
+}
 export default class Store{
   constructor(options){
 
@@ -80,16 +86,33 @@ export default class Store{
     store._wrappedGetters = Object.create(null)
     store._mutations = Object.create(null)
     store._actions = Object.create(null)
+
+    //是否开启严格模式：
+    //  state 不能直接修改
+    //  mutations 不能写异步代码
+    store.strict = options.strict || false;
+
+    //用来判断 mutations 是否是异步执行
+    //在执行mutation之前 _commiting = true;
+    //执行mutation之后  _commiting = false
+    //执行mutation会更改状态，监控这个状态，如果当前状态变化的时候 _commiting 为 true，就是同步的
+    store._commiting = false;
     
     const state = store._modules.root.state;
     installModule(store,state,[],store._modules.root);
     resetStoreState(store,state);
   }
+  _withCommit(fn){
+    const commiting = this._commiting;
+    this._commiting = true;
+    fn();
+    this._commiting = commiting;
+  }
   //写成箭头函数，防止结构出来之后 this指向不正确
   commit = (type,payload) => {
     let entry = this._mutations[type] || []
-    entry.forEach(mutation=>{
-      mutation(payload)
+    this._withCommit(()=>{
+      entry.forEach(mutation=>mutation(payload))
     })
   }
   dispatch = (type,payload) => {

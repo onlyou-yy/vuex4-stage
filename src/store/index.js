@@ -1,6 +1,7 @@
 import { createStore } from '../vuex'
 
 export default createStore({
+  strict:true,
   state: {
     count:0
   },
@@ -15,6 +16,11 @@ export default createStore({
   mutations: {
     add(state,payload){
       state.count += payload;
+    },
+    asyncMuta(state,payload){
+      setTimeout(()=>{
+        state.count += payload;
+      },20)
     }
   },
   actions: {

@@ -16,6 +16,7 @@
   <p>
     <button @click="add">add</button> <br>
     <button @click="addAsync">addAsync</button> <br>
+    <button @click="asyncMuta">asyncMuta</button> <br>
     <button @click="addModCount()">add root</button> <br>
     <button @click="addModCount('moduleA')">add A count</button> <br>
     <!-- B C 增加不了因为没有开启 namespaced  -->
@@ -39,9 +40,13 @@ function useCount(){
   function addAsync(){
     store.dispatch("addAsync",1);
   }
+  function asyncMuta(){
+    store.commit("asyncMuta",1);
+  }
   return {
     add,
-    addAsync
+    addAsync,
+    asyncMuta
   };
 }
 
@@ -70,7 +75,7 @@ export default {
     [PageB.name]:PageB,
   },
   setup(){
-    let {add,addAsync} = useCount();
+    let {add,addAsync,asyncMuta} = useCount();
     let {rootCount,modACount,modBCount,modCCount,modDCount,addModCount} = useModuleCount();
     return {
       add,
@@ -81,6 +86,7 @@ export default {
       modCCount,
       modDCount,
       addModCount,
+      asyncMuta
     }
   }
 }
