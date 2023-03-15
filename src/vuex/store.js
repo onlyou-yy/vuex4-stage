@@ -15,11 +15,11 @@ export function getNestedState(state,path){
  * @param {*} module 根模块
  */
 function installModule(store,rootState,path,module){
-  const isRoot = path.length;
+  const isRoot = path.length === 0;
 
   const namespaced = store._modules.getNamespaced(path);
   console.log(namespaced);
-  
+
   if(!isRoot){
     const parentState = path.slice(0,-1).reduce((state,key)=>state[key],rootState)
     parentState[path[path.length - 1]] = module.state;

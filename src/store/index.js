@@ -27,21 +27,31 @@ export default createStore({
   modules:{
     moduleA:{
       namespaced:true,
-      state:{name:"a"}
+      state:{count:100},
+      mutations:{
+        add:(state,payload) => state.count += payload
+      }
     },
     moduleB:{
-      namespaced:true,
-      state:{name:"b"},
+      state:{count:200},
+      mutations:{
+        add:(state,payload) => state.count += payload
+      },
       modules:{
         moduleD:{
           namespaced:true,
-          state:{name:"b"},
+          state:{count:400},
+          mutations:{
+            add:(state,payload) => state.count += payload
+          },
         }
       }
     },
     moduleC:{
-      namespaced:true,
-      state:{name:"c"}
+      state:{count:300},
+      mutations:{
+        add:(state,payload) => state.count += payload
+      },
     },
   }
 })

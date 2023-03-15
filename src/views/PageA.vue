@@ -7,15 +7,15 @@
 
 <script>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '../vuex'
 
 export default {
   name:"PageA",
   setup() {
     let store = useStore();
     return {
-      count:computed(()=>{store.state.count}),
-      double:computed(()=>{store.getters.double}),
+      count:computed(()=>store.state.count),
+      double:computed(()=>store.getters.double),
     }
   },
 }
