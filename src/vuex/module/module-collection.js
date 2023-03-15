@@ -32,6 +32,8 @@ export default class ModuleCollection{
         this.register(rawChildModule,path.concat(key))
       })
     }
+
+    return newModule;
   }
 
   //获取命名空间字符串

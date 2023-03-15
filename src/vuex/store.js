@@ -12,7 +12,7 @@ export function getNestedState(state,path){
  * @param {*} store 
  * @param {*} rootState 根状态 
  * @param {*} path 递归路径
- * @param {*} module 根模块
+ * @param {*} module 要注册的模块
  */
 function installModule(store,rootState,path,module){
   const isRoot = path.length === 0;
@@ -21,8 +21,10 @@ function installModule(store,rootState,path,module){
   console.log(namespaced);
 
   if(!isRoot){
-    const parentState = path.slice(0,-1).reduce((state,key)=>state[key],rootState)
-    parentState[path[path.length - 1]] = module.state;
+    store._withCommit(()=>{
+      const parentState = path.slice(0,-1).reduce((state,key)=>state[key],rootState)
+      parentState[path[path.length - 1]] = module.state;
+    })
   }
 
   module.forEachGetter((getter,key)=>{
@@ -149,5 +151,13 @@ export default class Store{
     //Vue2提供全局方法或者属性是通过原型链的形式
     //Vue3是通过配置
     app.config.globalProperties.$store = this;
+  }
+  registerModule(path,rawModule){
+    if(typeof path === 'string') path = [path];
+    const store = this;
+    const state = store.state;
+    const newModule = store._modules.register(rawModule,path)
+    installModule(store,state,path,newModule);
+    resetStoreState(store,state);
   }
 }

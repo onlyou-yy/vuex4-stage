@@ -19,10 +19,9 @@
     <button @click="asyncMuta">asyncMuta</button> <br>
     <button @click="addModCount()">add root</button> <br>
     <button @click="addModCount('moduleA')">add A count</button> <br>
-    <!-- B C 增加不了因为没有开启 namespaced  -->
     <button @click="addModCount('moduleB')">add B count</button> <br>
     <button @click="addModCount('moduleC')">add C count</button> <br>
-    <button @click="addModCount('moduleD')">add D count</button>
+    <button @click="addModCount('moduleB/moduleD')">add D count</button>
   </p>
 </template>
 

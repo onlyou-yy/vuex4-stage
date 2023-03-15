@@ -16,7 +16,7 @@ function customPlugin(store){
   })
 }
 
-export default createStore({
+const store = createStore({
   plugins:[
     customPlugin,
   ],
@@ -58,25 +58,31 @@ export default createStore({
       }
     },
     moduleB:{
+      namespaced:true,
       state:{count:200},
       mutations:{
         add:(state,payload) => state.count += payload
-      },
-      modules:{
-        moduleD:{
-          namespaced:true,
-          state:{count:400},
-          mutations:{
-            add:(state,payload) => state.count += payload
-          },
-        }
       }
-    },
-    moduleC:{
-      state:{count:300},
-      mutations:{
-        add:(state,payload) => state.count += payload
-      },
     },
   }
 })
+
+//一个模块代表注册到根模块
+store.registerModule(['moduleC'],{
+  namespaced:true,
+  state:{count:300},
+  mutations:{
+    add:(state,payload) => state.count += payload
+  },
+})
+
+//多个模块代表注册到前一个模块
+store.registerModule(['moduleB','moduleD'],{
+  namespaced:true,
+  state:{count:400},
+  mutations:{
+    add:(state,payload) => state.count += payload
+  },
+})
+
+export default store
